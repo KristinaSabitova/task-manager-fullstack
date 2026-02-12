@@ -12,6 +12,11 @@ if (savedTasks) {
 renderTasks();
 
 button.addEventListener("click", addTask);
+input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        addTask();
+    }
+});
 
 function addTask() {
     const text = input.value.trim();
