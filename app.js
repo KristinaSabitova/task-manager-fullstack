@@ -2,7 +2,12 @@ const input = document.getElementById("taskInput");
 const button = document.getElementById("addTaskBtn");
 const list = document.getElementById("taskList");
 
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let tasks = [];
+
+const savedTasks = localStorage.getItem("tasks");
+if (savedTasks) {
+    tasks = JSON.parse(savedTasks);
+}
 
 renderTasks();
 
@@ -14,38 +19,36 @@ function addTask() {
 
     const task = {
         id: Date.now(),
-        text,
+        text: text,
         completed: false
     };
 
     tasks.push(task);
-    saveTasks();
+    localStorage.setItem("tasks", JSON.stringify(tasks));
     renderTasks();
     input.value = "";
 }
 
 function toggleTask(id) {
-    tasks = tasks.map(task =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-    );
-    saveTasks();
+    for (let task of tasks) {
+        if (task.id === id) {
+            task.completed = !task.completed;
+        }
+    }
+    localStorage.setItem("tasks", JSON.stringify(tasks));
     renderTasks();
 }
 
 function deleteTask(id) {
     tasks = tasks.filter(task => task.id !== id);
-    saveTasks();
-    renderTasks();
-}
-
-function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
+    renderTasks();
 }
 
 function renderTasks() {
     list.innerHTML = "";
 
-    tasks.forEach(task => {
+    for (let task of tasks) {
         const li = document.createElement("li");
         if (task.completed) li.classList.add("completed");
 
@@ -61,5 +64,5 @@ function renderTasks() {
         li.appendChild(span);
         li.appendChild(deleteBtn);
         list.appendChild(li);
-    });
+    }
 }
