@@ -3,6 +3,7 @@ const button = document.getElementById("addTaskBtn");
 const list = document.getElementById("taskList");
 
 let tasks = [];
+let currentFilter = "all";
 
 const savedTasks = localStorage.getItem("tasks");
 if (savedTasks) {
@@ -12,6 +13,7 @@ if (savedTasks) {
 renderTasks();
 
 button.addEventListener("click", addTask);
+
 input.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
         addTask();
@@ -29,7 +31,7 @@ function addTask() {
     };
 
     tasks.push(task);
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    saveTasks();
     renderTasks();
     input.value = "";
 }
@@ -40,20 +42,39 @@ function toggleTask(id) {
             task.completed = !task.completed;
         }
     }
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    saveTasks();
     renderTasks();
 }
 
 function deleteTask(id) {
     tasks = tasks.filter(task => task.id !== id);
+    saveTasks();
+    renderTasks();
+}
+
+function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function filterTasks(type) {
+    currentFilter = type;
     renderTasks();
 }
 
 function renderTasks() {
     list.innerHTML = "";
 
-    for (let task of tasks) {
+    let filteredTasks = tasks;
+
+    if (currentFilter === "active") {
+        filteredTasks = tasks.filter(task => !task.completed);
+    }
+
+    if (currentFilter === "completed") {
+        filteredTasks = tasks.filter(task => task.completed);
+    }
+
+    for (let task of filteredTasks) {
         const li = document.createElement("li");
         if (task.completed) li.classList.add("completed");
 
