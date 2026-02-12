@@ -14,8 +14,8 @@ renderTasks();
 
 button.addEventListener("click", addTask);
 
-input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
+input.addEventListener("keyup", function(e) {
+    if (e.code === "Enter") {
         addTask();
     }
 });
