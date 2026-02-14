@@ -1,5 +1,7 @@
 # 📝 Task Manager – Full Stack Java + JavaScript
 
+🔗 Demo en vivo: https://kristinasabitova.github.io/task-manager-fullstack/
+
 Aplicación de gestión de tareas desarrollada desde cero con frontend en JavaScript y backend en Java, conectados mediante una API REST propia.
 
 Proyecto enfocado a aprender arquitectura full stack real, persistencia de datos y comunicación cliente-servidor.
