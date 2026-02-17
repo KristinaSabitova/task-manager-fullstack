@@ -1,16 +1,18 @@
-const API = "http://localhost:8080/tasks";
-
 const input = document.getElementById("taskInput");
 const addBtn = document.getElementById("addTaskBtn");
 const list = document.getElementById("taskList");
 
-async function loadTasks() {
-  const res = await fetch(API);
-  const tasks = await res.json();
-  render(tasks);
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [
+  { id: 1, text: "Aprender Java", completed: false },
+  { id: 2, text: "Crear API", completed: false },
+  { id: 3, text: "Conectar frontend", completed: false }
+];
+
+function save() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-function render(tasks) {
+function render() {
   list.innerHTML = "";
 
   tasks.forEach(task => {
@@ -31,30 +33,34 @@ function render(tasks) {
     li.appendChild(del);
     list.appendChild(li);
   });
+
+  save();
 }
 
-async function addTask() {
+function addTask() {
   const text = input.value.trim();
   if (!text) return;
 
-  await fetch(API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text })
+  tasks.push({
+    id: Date.now(),
+    text,
+    completed: false
   });
 
   input.value = "";
-  loadTasks();
+  render();
 }
 
-async function toggleTask(id) {
-  await fetch(`${API}/${id}`, { method: "PUT" });
-  loadTasks();
+function toggleTask(id) {
+  tasks = tasks.map(t =>
+    t.id === id ? { ...t, completed: !t.completed } : t
+  );
+  render();
 }
 
-async function deleteTask(id) {
-  await fetch(`${API}/${id}`, { method: "DELETE" });
-  loadTasks();
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  render();
 }
 
 addBtn.onclick = addTask;
@@ -66,4 +72,4 @@ input.addEventListener("keydown", e => {
   }
 });
 
-loadTasks();
+render();
